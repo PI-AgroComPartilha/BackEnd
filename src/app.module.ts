@@ -22,4 +22,5 @@ import { Categorias } from "./categorias/entities/categoria.entity";
   controllers: [AppController],
   providers: [AppService],
 })
+
 export class AppModule {}
