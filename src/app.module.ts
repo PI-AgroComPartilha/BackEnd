@@ -4,6 +4,9 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CategoriasModule } from "./categorias/categoria.module";
 import { Categorias } from "./categorias/entities/categoria.entity";
+import { Produto } from "./produtos/entities/produto.entity";
+import { ProdutoModule } from "./produtos/produto.module";
+import { Usuario } from "./usuarios/entities/usuario.entity";
 
 @Module({
   imports: [
@@ -14,13 +17,14 @@ import { Categorias } from "./categorias/entities/categoria.entity";
       username: "root",
       password: "root",
       database: "db_agrocompartilha",
-      entities: [Categorias],
+      entities: [Categorias, Produto, Usuario],
       synchronize: true,
     }),
     CategoriasModule,
+    ProdutoModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 
 export class AppModule {}

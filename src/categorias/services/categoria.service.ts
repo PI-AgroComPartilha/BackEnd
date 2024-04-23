@@ -32,10 +32,6 @@ export class CategoriaService {
         if (!categoria.length)
             throw new HttpException('Categoria não foi encontrada!', HttpStatus.NOT_FOUND);
         return categoria
-
-
-
-
     }
 
     async create(categoria: Categorias): Promise<Categorias> {
