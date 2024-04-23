@@ -2,13 +2,15 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Produto } from "../entities/produto.entity";
 import { DeleteResult, ILike, Repository } from "typeorm";
+import { CategoriaService } from "../../categorias/services/categoria.service";
 
 @Injectable()
 export class ProdutoService{
+    produtoService: any;
     constructor(
         @InjectRepository(Produto)
         private produtoRepository: Repository<Produto>,
-
+        private readonly categoriaService: CategoriaService
     ){}
 
     async FindAll(): Promise<Produto[]>{
@@ -31,39 +33,48 @@ export class ProdutoService{
     }
 
     async findByNome(nome: string): Promise<Produto[]>{
-        return await this.produtoRepository.find({
+        let produtosEncontrado = await this.produtoRepository.find({
             where:{
                 nome: ILike(`%${nome}%`) 
             }, relations:{usuarios:true, categorias:true}
         })
+
+        if(!produtosEncontrado){
+            throw new HttpException('Não foi encontrado nenhum produto', HttpStatus.NOT_FOUND)
+        }
+
+        return produtosEncontrado
     }
 
     async findByDescricao(descricao: string): Promise<Produto[]>{
-        return await this.produtoRepository.find({
+        let produtosEncontrado = await this.produtoRepository.find({
             where:{
                 descricao: ILike(`%${descricao}%`) 
             }
         })
+
+        if(!produtosEncontrado){
+            throw new HttpException('Não foi encontrado nenhum produto', HttpStatus.NOT_FOUND)
+        }
+
+        return produtosEncontrado
     }
 
     async create(produto: Produto): Promise<Produto>{
-        
+               
         if(!produto){
-                throw new HttpException('Produto não pode ser vazio', HttpStatus.BAD_REQUEST)
-
+            throw new HttpException('Produto não pode ser vazio', HttpStatus.BAD_REQUEST)
         }
-
-        return await this.produtoRepository.save(produto);
+            return await this.produtoRepository.save(produto);
     }
-
+   
     async update(produto: Produto): Promise<Produto>{
 
         let buscaProduto: Produto = await this.findById(produto.id);
 
             if (!buscaProduto || !produto.id)
                 throw new HttpException('O Produto não foi encontrado!', HttpStatus.NOT_FOUND)
-
-
+            
             return await this.produtoRepository.save(produto);
     }
 

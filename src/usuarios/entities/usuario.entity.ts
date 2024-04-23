@@ -37,5 +37,5 @@ export class Usuario{
   @OneToMany(() => Produto, (produtos) => produtos.usuarios, {
     onDelete: "CASCADE"
   })
-  produtos: Produto;
+  produtos: Produto[];
 }

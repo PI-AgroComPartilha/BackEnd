@@ -3,8 +3,6 @@ import { Produto } from "../entities/produto.entity";
 import { DeleteResult } from "typeorm";
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 
-
-
 @Controller("/produtos")
 export class ProdutoController {
 
@@ -15,11 +13,10 @@ export class ProdutoController {
         return this.produtoService.FindAll()
     }
 
-    @Get('/id')
+    @Get('/:id')
     @HttpCode(HttpStatus.OK)
     async findById(@Param('id', ParseIntPipe) id: number): Promise<Produto> {
         return this.produtoService.findById(id);
-
     }
 
     @Get('/nome/:nome')
