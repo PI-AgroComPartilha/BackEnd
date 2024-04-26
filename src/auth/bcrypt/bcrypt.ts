@@ -10,6 +10,6 @@ export class Bcrypt {
   }
 
   async compararSenha (senhaSecreta:string, senhaDigitada: string): Promise<boolean>{
-    return  bcrypt.compareSync(senhaSecreta, senhaDigitada);
+    return  bcrypt.compareSync(senhaDigitada, senhaSecreta);
   }
 }
