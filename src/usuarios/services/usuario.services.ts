@@ -64,9 +64,12 @@ export class UsuarioService {
 
     async update(usuario: Usuario): Promise<Usuario> {
 
+        if(!usuario.id)
+            throw new HttpException("Id não fornecido", HttpStatus.BAD_REQUEST);
+
         let updateUsuario: Usuario = await this.findById(usuario.id);
         let buscaUsuario = await this.findByUsuario(usuario.usuario);
-
+        
         if (!updateUsuario)
             throw new HttpException('Usuário não encontrado!', HttpStatus.NOT_FOUND);
 

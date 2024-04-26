@@ -8,7 +8,7 @@ import { Produto } from "./produtos/entities/produto.entity";
 import { ProdutoModule } from "./produtos/produto.module";
 import { Usuario } from "./usuarios/entities/usuario.entity";
 import { AuthModule } from './auth/auth.module';
-import { UsuarioModule } from './usuarios/usuarios.module';
+import { UsuarioModule } from './usuarios/usuario.module';
 
 
 

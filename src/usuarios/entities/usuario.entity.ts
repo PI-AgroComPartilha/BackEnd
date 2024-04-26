@@ -6,7 +6,6 @@ import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "ty
 @Entity({name: 'tb_usuarios'})
 export class Usuario{
 
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,8 +33,6 @@ export class Usuario{
   @IsUrl()
   foto: string;
 
-  @OneToMany(() => Produto, (produtos) => produtos.usuarios, {
-    onDelete: "CASCADE"
-  })
-  produtos: Produto;
+  @OneToMany(() => Produto, (produtos) => produtos.usuarios)
+  produtos: Produto[];
 }

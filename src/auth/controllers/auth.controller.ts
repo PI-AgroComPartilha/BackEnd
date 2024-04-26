@@ -6,8 +6,8 @@ import { UsuarioLogin } from './../entities/usuariologin.entity';
 @Controller("/usuarios")
 export class AuthController {
     constructor(private authService: AuthService) { }
-
-    @UseGuards(LocalAuthGuard)
+    
+    
     @HttpCode(HttpStatus.OK)
     @Post('/logar')
     async login(@Body() user: UsuarioLogin): Promise<any> {
