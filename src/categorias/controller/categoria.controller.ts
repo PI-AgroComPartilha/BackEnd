@@ -1,9 +1,10 @@
-import {Body,Controller,Delete,Get,HttpCode,HttpException,HttpStatus,Param,ParseIntPipe,Post,Put,} from '@nestjs/common';
+import {Body,Controller,Delete,Get,HttpCode,HttpException,HttpStatus,Param,ParseIntPipe,Post,Put, UseGuards,} from '@nestjs/common';
 import { CategoriaService } from '../services/categoria.service';
 import { Categorias } from '../entities/categoria.entity';
 import { DeleteResult } from "typeorm";
+import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
 
-
+@UseGuards(JwtAuthGuard)
 @Controller("/categorias")
 export class CategoriaController {
   
@@ -12,7 +13,7 @@ export class CategoriaController {
    @Get()
    async findAll(): Promise<Categorias[]>{
         return this.categoriaService.findAll()
-   }
+   } 
 
    @Get('/:id')
    @HttpCode(HttpStatus.OK)

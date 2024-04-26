@@ -7,6 +7,10 @@ import { Categorias } from "./categorias/entities/categoria.entity";
 import { Produto } from "./produtos/entities/produto.entity";
 import { ProdutoModule } from "./produtos/produto.module";
 import { Usuario } from "./usuarios/entities/usuario.entity";
+import { AuthModule } from './auth/auth.module';
+import { UsuarioModule } from './usuarios/usuarios.module';
+
+
 
 @Module({
   imports: [
@@ -21,7 +25,9 @@ import { Usuario } from "./usuarios/entities/usuario.entity";
       synchronize: true,
     }),
     CategoriasModule,
-    ProdutoModule
+    ProdutoModule,
+    AuthModule,
+    UsuarioModule
   ],
   controllers: [],
   providers: [],

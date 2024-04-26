@@ -1,6 +1,6 @@
 import { Transform, TransformFnParams } from "class-transformer";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Length } from "class-validator";
+import { IsNumber, Length } from "class-validator";
 import { Categorias } from "../../categorias/entities/categoria.entity";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
 
@@ -27,6 +27,7 @@ export class Produto {
     foto:string;
 
     @Column({type:'decimal', precision:8, scale:2})
+    @IsNumber()
     preco:number;
 
     @Column({type:"int"})
