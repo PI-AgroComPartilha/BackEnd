@@ -8,28 +8,24 @@ import { Produto } from "./produtos/entities/produto.entity";
 import { ProdutoModule } from "./produtos/produto.module";
 import { Usuario } from "./usuarios/entities/usuario.entity";
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 import { UsuarioModule } from './usuarios/usuarios.module';
-
+import { DevService } from "./auth/data/services/dev.service";
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: "mysql",
-      host: "localhost",
-      port: 3306,
-      username: "root",
-      password: "root",
-      database: "db_agrocompartilha",
-      entities: [Categorias, Produto, Usuario],
-      synchronize: true,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      useClass: DevService,
+      imports: [ConfigModule],
     }),
-    CategoriasModule,
     ProdutoModule,
-    AuthModule,
-    UsuarioModule
+    CategoriasModule,
+    UsuarioModule,
+    AuthModule
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [],
 })
 

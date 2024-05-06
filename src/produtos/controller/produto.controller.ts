@@ -3,10 +3,12 @@ import { Produto } from "../entities/produto.entity";
 import { DeleteResult } from "typeorm";
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-
+@ApiTags('Produto')
 @UseGuards(JwtAuthGuard)
 @Controller("/produtos")
+@ApiBearerAuth()
 export class ProdutoController {
 
     constructor(private readonly produtoService: ProdutoService) { }
