@@ -1,50 +1,56 @@
-import { JwtService } from '@nestjs/jwt';
-import { UsuarioService } from '../../usuarios/services/usuarios.services';
+import { JwtService } from "@nestjs/jwt";
+import { UsuarioService } from "../../usuarios/services/usuarios.services";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { Bcrypt } from '../bcrypt/bcrypt';
-import { UsuarioLogin } from '../entities/usuariologin.entity';
-
+import { Bcrypt } from "../bcrypt/bcrypt";
+import { UsuarioLogin } from "../entities/usuariologin.entity";
 
 @Injectable()
-export class AuthService{
-    constructor(
-        private usuarioService: UsuarioService,
-        private jwtService: JwtService,
-        private bcrypt: Bcrypt
-    ){ }
+export class AuthService {
+  constructor(
+    private usuarioService: UsuarioService,
+    private jwtService: JwtService,
+    private bcrypt: Bcrypt
+  ) {}
 
-    async validateUser(username: string, password: string): Promise<any>{
+  async validateUser(username: string, password: string): Promise<any> {
+    const buscaUsuario = await this.usuarioService.findByUsuario(username);
 
-        const buscaUsuario = await this.usuarioService.findByUsuario(username)
+    if (!buscaUsuario)
+      throw new HttpException("Usuário não encontrado!", HttpStatus.NOT_FOUND);
 
-        if(!buscaUsuario)
-            throw new HttpException('Usuário não encontrado!', HttpStatus.NOT_FOUND)
+    const matchPassword = await this.bcrypt.compararSenha(
+      password,
+      buscaUsuario.senha
+    );
 
-        const matchPassword = await this.bcrypt.compararSenha(buscaUsuario.senha, password)
-
-        if(buscaUsuario && matchPassword){
-            const { senha, ...resposta } = buscaUsuario
-            return resposta
-        }
-
-        return null
-
+    if (buscaUsuario && matchPassword) {
+      const { senha, ...resposta } = buscaUsuario;
+      return resposta;
+    } else {
+      throw new HttpException("Senha incorreta", HttpStatus.BAD_REQUEST);
     }
+  }
 
-    async login(usuarioLogin: UsuarioLogin){
+  async login(usuarioLogin: UsuarioLogin) {
+    const payload = { sub: usuarioLogin.usuario };
+    const buscaUsuario = await this.usuarioService.findByUsuario(
+      usuarioLogin.usuario
+    );
+    if (!buscaUsuario)
+      throw new HttpException("Usuário não encontrado!", HttpStatus.NOT_FOUND);
 
-        const payload = { sub: usuarioLogin.usuario }
+    const user = await this.validateUser(
+      usuarioLogin.usuario,
+      usuarioLogin.senha
+    );
 
-        const buscaUsuario = await this.usuarioService.findByUsuario(usuarioLogin.usuario)
-
-        return{
-            id: buscaUsuario.id,
-            nome: buscaUsuario.nome,
-            usuario: usuarioLogin.usuario,
-            senha: '',
-            foto: buscaUsuario.foto,
-            token: `Bearer ${this.jwtService.sign(payload)}`,
-        }
-
-    }
+    return {
+      id: user.id,
+      nome: user.nome,
+      usuario: user.usuario,
+      senha: "",
+      foto: user.foto,
+      token: `Bearer ${this.jwtService.sign(payload)}`,
+    };
+  }
 }

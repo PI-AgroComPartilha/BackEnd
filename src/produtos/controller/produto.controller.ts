@@ -31,9 +31,7 @@ export class ProdutoController {
 
   @Get("/:id")
   @HttpCode(HttpStatus.OK)
-  async findById(
-    @Param("id", new ParseIntPipe()) id: number
-  ): Promise<Produto> {
+  findById(@Param("id", ParseIntPipe) id: number): Promise<Produto> {
     return this.produtoService.findById(id);
   }
 
