@@ -50,6 +50,7 @@ export class AuthService {
       usuario: user.usuario,
       senha: "",
       foto: user.foto,
+      tipo: user.tipo,
       token: `Bearer ${this.jwtService.sign(payload)}`,
     };
   }
