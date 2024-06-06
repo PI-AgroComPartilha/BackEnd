@@ -18,11 +18,9 @@ import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Produto")
-@UseGuards(JwtAuthGuard)
 @Controller("/produtos")
-@ApiBearerAuth()
 export class ProdutoController {
-  constructor(private readonly produtoService: ProdutoService) {}
+  constructor(private readonly produtoService: ProdutoService) { }
 
   @Get()
   async findAll(): Promise<Produto[]> {
@@ -49,18 +47,24 @@ export class ProdutoController {
     return this.produtoService.findByDescricao(descricao);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.OK)
   create(@Body() Produto: Produto): Promise<Produto> {
     return this.produtoService.create(Produto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Put()
   @HttpCode(HttpStatus.OK)
   update(@Body() Produto: Produto): Promise<Produto> {
     return this.produtoService.update(Produto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Delete("/:id")
   @HttpCode(HttpStatus.OK)
   delete(@Param("id", ParseIntPipe) id: number): Promise<DeleteResult> {
