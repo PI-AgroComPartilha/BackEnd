@@ -1,6 +1,6 @@
 import { Transform, TransformFnParams } from "class-transformer";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { IsNumber, Length } from "class-validator";
+import { IsEmpty, IsNumber, IsOptional, Length } from "class-validator";
 import { Categorias } from "../../categorias/entities/categoria.entity";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
 import { ApiProperty } from "@nestjs/swagger";
@@ -20,9 +20,9 @@ export class Produto {
   nome: string;
 
   @ApiProperty()
-  @Column()
-  @Length(9, 255)
-  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @Column({ default: "" })
+  @IsOptional()
+  @IsEmpty()
   descricao: string;
 
   @ApiProperty()
@@ -36,7 +36,9 @@ export class Produto {
   preco: number;
 
   @ApiProperty()
-  @Column({ type: "int" })
+  @Column({ type: "int", default: 1 })
+  @IsOptional()
+  @IsEmpty()
   quantidade: number;
 
   /* @Column({type: 'int', nullable:true, default: 0 })
