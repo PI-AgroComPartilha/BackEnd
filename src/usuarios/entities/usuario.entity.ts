@@ -37,8 +37,8 @@ export class Usuario {
   @Column({ nullable: false, length: 128 })
   @IsNotEmpty()
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsIn(["vendedor", "cliente"])
-  @ApiProperty({ examples: ["cliente", "vendedor"] })
+  @IsIn(["vendedor", "cliente", "admin"])
+  @ApiProperty({ examples: ["cliente", "vendedor", "admin"] })
   tipo: string;
 
   @Column()
