@@ -1,54 +1,86 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards, } from '@nestjs/common';
-import { CategoriaService } from '../services/categoria.service';
-import { Categorias } from '../entities/categoria.entity';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from "@nestjs/common";
+import { CategoriaService } from "../services/categoria.service";
+import { Categoria } from "../entities/categoria.entity";
 import { DeleteResult } from "typeorm";
 import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { CategoriaUpdateDto } from "../dto/categorias.update.dto";
+import { CategoriasCreateDto } from "../dto/categorias.create.dto";
 
-@ApiTags('Categoria')
+@ApiTags("Categoria")
 @Controller("/categorias")
 export class CategoriaController {
-
-  constructor(private readonly categoriaService: CategoriaService) { }
+  constructor(private readonly categoriaService: CategoriaService) {}
 
   @Get()
-  async findAll(): Promise<Categorias[]> {
-    return this.categoriaService.findAll()
+  @ApiResponse({
+    type: [Categoria],
+    description: "Listagem das categorias",
+  })
+  @HttpCode(HttpStatus.OK)
+  async findAll(): Promise<Categoria[]> {
+    return this.categoriaService.findAll();
   }
 
-  @Get('/:id')
+  @ApiResponse({
+    type: Categoria,
+    description: "Encontra categoria pelo ID",
+  })
+  @Get(":id")
   @HttpCode(HttpStatus.OK)
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<Categorias> {
+  async findById(@Param("id", ParseIntPipe) id: number): Promise<Categoria> {
     return this.categoriaService.findById(id);
   }
 
-  @Get('tipo/:tipo')
+  @Get("nome/:nome")
   @HttpCode(HttpStatus.OK)
-  async findByTipo(@Param('tipo') tipo: string): Promise<Categorias[]> {
-    return this.categoriaService.findByTipo(tipo);
+  async findByTipo(@Param("nome") nome: string): Promise<Categoria[]> {
+    return this.categoriaService.findByNome(nome);
   }
 
+  @ApiResponse({
+    description: "Cria uma nova categoria",
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
-  @HttpCode(HttpStatus.OK)
-  create(@Body() categoria: Categorias): Promise<Categorias> {
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() categoria: CategoriasCreateDto): Promise<Categoria> {
     return this.categoriaService.create(categoria);
   }
 
+  @ApiResponse({
+    description: "Atualiza uma categoria",
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Put()
+  @Put(":id")
   @HttpCode(HttpStatus.OK)
-  update(@Body() categoria: Categorias): Promise<Categorias> {
-    return this.categoriaService.update(categoria)
+  update(
+    @Param("id", ParseIntPipe)
+    id: number,
+    @Body() categoria: CategoriaUpdateDto
+  ): Promise<Categoria> {
+    return this.categoriaService.update(id, categoria);
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Delete('/:id')
-  @HttpCode(HttpStatus.OK)
-  delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param("id", ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.categoriaService.delete(id);
   }
 }

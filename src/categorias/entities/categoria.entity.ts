@@ -1,24 +1,18 @@
-import { Transform, TransformFnParams } from "class-transformer";
-import { IsNotEmpty, Length } from "class-validator";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Produto } from "../../produtos/entities/produto.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: "tb_categorias" })
-export class Categorias {
-
+export class Categoria {
   @PrimaryGeneratedColumn()
-  @ApiProperty() 
+  @ApiProperty()
   id: number;
 
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsNotEmpty()
-  @Length(4, 50)
-  @Column({ nullable: false })
-  @ApiProperty() 
-  tipo: string;
+  @ApiProperty()
+  @Column({ nullable: false, length: 255 })
+  nome: string;
 
-  @ApiProperty({ type: () => Produto}) 
+  @ApiProperty({ type: () => [Produto.prototype.quantidade] })
   @OneToMany(() => Produto, (produtos) => produtos.categorias)
-  produtos: Produto;
+  produtos: Produto[];
 }

@@ -1,9 +1,9 @@
 import { Transform, TransformFnParams } from "class-transformer";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { IsEmpty, IsNumber, IsOptional, Length } from "class-validator";
-import { Categorias } from "../../categorias/entities/categoria.entity";
+import { Categoria } from "../../categorias/entities/categoria.entity";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
 
 // relação muitos produtos para 1 usuario
 
@@ -43,13 +43,13 @@ export class Produto {
 
   /* @Column({type: 'int', nullable:true, default: 0 })
     curtidas: number; */
-  @ApiProperty({ type: () => Categorias })
-  @ManyToOne(() => Categorias, (categorias) => categorias.produtos, {
-    //Relação
+  @ApiProperty({ type: () => Categoria })
+  @ManyToOne(() => Categoria, (categorias) => categorias.produtos, {
     onDelete: "CASCADE",
   })
-  categorias: Categorias;
+  categorias: Categoria;
 
+  //Omit password in the type
   @ApiProperty({ type: () => Usuario })
   @ManyToOne(() => Usuario, (usuarios) => usuarios.produtos, {
     onDelete: "CASCADE",

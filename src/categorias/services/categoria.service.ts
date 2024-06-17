@@ -1,22 +1,27 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { Categorias } from "../entities/categoria.entity";
+import { Categoria } from "../entities/categoria.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, ILike, Repository } from "typeorm";
+import { CategoriasCreateDto } from "../dto/categorias.create.dto";
+import { CategoriaUpdateDto } from "../dto/categorias.update.dto";
 
 @Injectable()
 export class CategoriaService {
   constructor(
-    @InjectRepository(Categorias)
-    private categoriaRepository: Repository<Categorias>
+    @InjectRepository(Categoria)
+    private categoriaRepository: Repository<Categoria>
   ) {}
 
-  async findAll(): Promise<Categorias[]> {
-    return await this.categoriaRepository.find();
+  async findAll(): Promise<Categoria[]> {
+    return await this.categoriaRepository.find({
+      relations: { produtos: true },
+    });
   }
 
-  async findById(id: number): Promise<Categorias> {
+  async findById(id: number): Promise<Categoria> {
     let categoria = await this.categoriaRepository.findOne({
       where: { id },
+      relations: { produtos: true },
     });
     if (!categoria)
       throw new HttpException(
@@ -26,9 +31,10 @@ export class CategoriaService {
     return categoria;
   }
 
-  async findByTipo(tipo: string): Promise<Categorias[]> {
+  async findByNome(nome: string): Promise<Categoria[]> {
     let categoria = await this.categoriaRepository.find({
-      where: { tipo: ILike(`%${tipo}%`) },
+      where: { nome: ILike(`%${nome}`) },
+      relations: { produtos: true },
     });
 
     if (!categoria.length)
@@ -39,44 +45,35 @@ export class CategoriaService {
     return categoria;
   }
 
-  async create(categoria: Categorias): Promise<Categorias> {
+  async create(categoria: CategoriasCreateDto): Promise<Categoria> {
     const findByName = await this.categoriaRepository.findOne({
-      where: { tipo: categoria.tipo },
+      where: { nome: ILike(`%${categoria.nome}%`) },
     });
 
-    if (findByName) {
-      throw new HttpException("Categoria ja existente", HttpStatus.CONFLICT);
-    }
+    if (findByName)
+      throw new HttpException(
+        `Categoria com o nome ${categoria.nome} ja existente`,
+        HttpStatus.CONFLICT
+      );
 
     return await this.categoriaRepository.save(categoria);
   }
 
-  async update(categoria: Categorias): Promise<Categorias> {
-    let buscaCategoria: Categorias = await this.findById(categoria.id);
+  async update(id: number, categoria: CategoriaUpdateDto): Promise<Categoria> {
+    await this.findById(categoria.id);
+
     const findByName = await this.categoriaRepository.findOne({
-      where: { tipo: categoria.tipo },
+      where: { nome: ILike(`%${categoria.nome}%`) },
     });
 
-    if (!buscaCategoria || !categoria.id)
-      throw new HttpException(
-        "Categoria não foi encontrada!",
-        HttpStatus.NOT_FOUND
-      );
-
-    if (findByName) {
+    if (findByName)
       throw new HttpException("Categoria ja existente", HttpStatus.CONFLICT);
-    }
 
     return await this.categoriaRepository.save(categoria);
   }
 
   async delete(id: number): Promise<DeleteResult> {
-    let buscaCategoria: Categorias = await this.findById(id);
-    if (!buscaCategoria)
-      throw new HttpException(
-        "Categoria não foi encontrada!",
-        HttpStatus.NOT_FOUND
-      );
+    await this.findById(id);
     return await this.categoriaRepository.delete(id);
   }
 }
