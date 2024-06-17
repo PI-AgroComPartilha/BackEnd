@@ -12,7 +12,7 @@ export class Categoria {
   @Column({ nullable: false, length: 255 })
   nome: string;
 
-  @ApiProperty({ type: () => [Produto.prototype.quantidade] })
+  @ApiProperty({ type: () => Produto })
   @OneToMany(() => Produto, (produtos) => produtos.categorias)
   produtos: Produto[];
 }
