@@ -1,11 +1,7 @@
-import { Transform, TransformFnParams } from "class-transformer";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { IsEmpty, IsNumber, IsOptional, Length } from "class-validator";
 import { Categoria } from "../../categorias/entities/categoria.entity";
 import { Usuario } from "src/usuarios/entities/usuario.entity";
-import { ApiProperty, OmitType } from "@nestjs/swagger";
-
-// relação muitos produtos para 1 usuario
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: "tb_produtos" })
 export class Produto {
@@ -15,44 +11,38 @@ export class Produto {
 
   @ApiProperty()
   @Column()
-  @Length(3, 255)
-  @Transform(({ value }: TransformFnParams) => value?.trim())
   nome: string;
 
   @ApiProperty()
   @Column({ default: "" })
-  @IsOptional()
-  @IsEmpty()
   descricao: string;
 
   @ApiProperty()
-  @Column()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @Column({
+    default:
+      "https://t3.ftcdn.net/jpg/04/60/01/36/360_F_460013622_6xF8uN6ubMvLx0tAJECBHfKPoNOR5cRa.jpg",
+  })
   foto: string;
 
   @ApiProperty()
   @Column({ type: "decimal", precision: 8, scale: 2 })
-  @IsNumber()
   preco: number;
 
   @ApiProperty()
-  @Column({ type: "int", default: 1 })
-  @IsOptional()
-  @IsEmpty()
+  @Column({ type: "int", default: 0 })
   quantidade: number;
 
-  /* @Column({type: 'int', nullable:true, default: 0 })
-    curtidas: number; */
   @ApiProperty({ type: () => Categoria })
   @ManyToOne(() => Categoria, (categorias) => categorias.produtos, {
     onDelete: "CASCADE",
+    nullable: false,
   })
-  categorias: Categoria;
+  categoria: Categoria;
 
-  //Omit password in the type
   @ApiProperty({ type: () => Usuario })
   @ManyToOne(() => Usuario, (usuarios) => usuarios.produtos, {
     onDelete: "CASCADE",
+    nullable: false,
   })
-  usuarios: Usuario;
+  usuario: Usuario;
 }

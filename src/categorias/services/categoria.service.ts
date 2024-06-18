@@ -60,7 +60,7 @@ export class CategoriaService {
   }
 
   async update(id: number, categoria: CategoriaUpdateDto): Promise<Categoria> {
-    await this.findById(categoria.id);
+    await this.findById(id);
 
     const findByName = await this.categoriaRepository.findOne({
       where: { nome: ILike(`%${categoria.nome}%`) },

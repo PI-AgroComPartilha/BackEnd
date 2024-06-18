@@ -16,8 +16,9 @@ import { AppController } from "./app.controller";
       useClass: DevService,
       imports: [ConfigModule],
     }),
-    /* TODO: Try fix CategoriasModule fist */
+    /* OK */
     CategoriasModule,
+    /* TODO: Making it work */
     ProdutoModule,
     UsuarioModule,
     AuthModule,

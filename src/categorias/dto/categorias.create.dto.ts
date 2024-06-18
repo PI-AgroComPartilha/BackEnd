@@ -4,9 +4,12 @@ import { IsNotEmpty, MaxLength } from "class-validator";
 
 export class CategoriasCreateDto {
   @ApiProperty({
-    example: "Frutas",
     description: "Nome da categoria",
+    type: String,
+    example: "Frutas",
+    required: true,
     uniqueItems: true,
+    maxLength: 255,
   })
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @IsNotEmpty()

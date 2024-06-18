@@ -46,7 +46,7 @@ export class Usuario {
   foto: string;
 
   @ApiProperty({ type: () => Produto })
-  @OneToMany(() => Produto, (produtos) => produtos.usuarios, {
+  @OneToMany(() => Produto, (produto) => produto.usuario, {
     onDelete: "CASCADE",
   })
   produtos: Produto;

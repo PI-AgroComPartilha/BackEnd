@@ -15,13 +15,19 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ProdutoCreateDTO } from "../dto/produto.create.dto";
+import ProdutoUpdateDTO from "../dto/produto.update.dto";
 
 @ApiTags("Produto")
 @Controller("/produtos")
 export class ProdutoController {
-  constructor(private readonly produtoService: ProdutoService) { }
+  constructor(private readonly produtoService: ProdutoService) {}
 
+  @ApiResponse({
+    type: [Produto],
+    description: "Retorna todos os produtos",
+  })
   @Get()
   async findAll(): Promise<Produto[]> {
     return this.produtoService.FindAll();
@@ -47,26 +53,33 @@ export class ProdutoController {
     return this.produtoService.findByDescricao(descricao);
   }
 
+  /*  @ApiResponse({
+    type: ,
+    description: "Criar novo Produto",
+  }) */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.OK)
-  create(@Body() Produto: Produto): Promise<Produto> {
+  create(@Body() Produto: ProdutoCreateDTO): Promise<Produto> {
     return this.produtoService.create(Produto);
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Put()
+  @Put("/:id")
   @HttpCode(HttpStatus.OK)
-  update(@Body() Produto: Produto): Promise<Produto> {
-    return this.produtoService.update(Produto);
+  update(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() produto: ProdutoUpdateDTO
+  ): Promise<Produto> {
+    return this.produtoService.update(id, produto);
   }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Delete("/:id")
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param("id", ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.produtoService.Delete(id);
   }

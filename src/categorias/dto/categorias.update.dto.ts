@@ -1,18 +1,4 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { Categoria } from "../entities/categoria.entity";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, MaxLength } from "class-validator";
+import { CategoriasCreateDto } from "./categorias.create.dto";
 
-export class CategoriaUpdateDto extends PartialType(Categoria) {
-  @ApiProperty({
-    description: "Nome da categoria",
-    type: String,
-    example: "Frutas",
-    required: true,
-    uniqueItems: true,
-    maxLength: 255,
-  })
-  @IsNotEmpty()
-  @MaxLength(255)
-  nome: string;
-}
+export class CategoriaUpdateDto extends PartialType(CategoriasCreateDto) {}
