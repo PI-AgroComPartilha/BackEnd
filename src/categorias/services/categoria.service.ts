@@ -60,16 +60,21 @@ export class CategoriaService {
   }
 
   async update(id: number, categoria: CategoriaUpdateDto): Promise<Categoria> {
-    await this.findById(id);
-
+    const existCategoria = await this.findById(id);
     const findByName = await this.categoriaRepository.findOne({
       where: { nome: ILike(`%${categoria.nome}%`) },
     });
 
     if (findByName)
-      throw new HttpException("Categoria ja existente", HttpStatus.CONFLICT);
+      throw new HttpException(
+        `Categoria com o nome ${categoria.nome} já existente.`,
+        HttpStatus.CONFLICT
+      );
 
-    return await this.categoriaRepository.save(categoria);
+    return await this.categoriaRepository.save({
+      ...categoria,
+      id: existCategoria.id,
+    });
   }
 
   async delete(id: number): Promise<DeleteResult> {

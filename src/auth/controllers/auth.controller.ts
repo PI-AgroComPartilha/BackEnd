@@ -1,15 +1,7 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-  Post,
-} from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { UsuarioLogin } from "./../entities/usuariologin.entity";
 import { ApiTags } from "@nestjs/swagger";
-import { LocalAuthGuard } from "../guard/local-auth.guard";
 
 @ApiTags("Usuario")
 @Controller("/usuarios")

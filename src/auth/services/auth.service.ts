@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
-    const buscaUsuario = await this.usuarioService.findByUsuario(username);
+    const buscaUsuario = await this.usuarioService.findByEmail(username);
 
     if (!buscaUsuario)
       throw new HttpException("Usuário não encontrado!", HttpStatus.NOT_FOUND);
@@ -32,15 +32,15 @@ export class AuthService {
   }
 
   async login(usuarioLogin: UsuarioLogin) {
-    const payload = { sub: usuarioLogin.usuario };
-    const buscaUsuario = await this.usuarioService.findByUsuario(
-      usuarioLogin.usuario
+    const payload = { sub: usuarioLogin.email };
+    const buscaUsuario = await this.usuarioService.findByEmail(
+      usuarioLogin.email
     );
     if (!buscaUsuario)
       throw new HttpException("Usuário não encontrado!", HttpStatus.NOT_FOUND);
 
     const user = await this.validateUser(
-      usuarioLogin.usuario,
+      usuarioLogin.email,
       usuarioLogin.senha
     );
 

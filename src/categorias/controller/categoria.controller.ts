@@ -44,6 +44,10 @@ export class CategoriaController {
     return this.categoriaService.findById(id);
   }
 
+  @ApiResponse({
+    type: [Categoria],
+    description: "Listagem das categorias por nome",
+  })
   @Get("nome/:nome")
   @HttpCode(HttpStatus.OK)
   async findByTipo(@Param("nome") nome: string): Promise<Categoria[]> {

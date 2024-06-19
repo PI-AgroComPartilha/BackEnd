@@ -16,7 +16,7 @@ export class ProdutoService {
     private readonly categoriaService: CategoriaService
   ) {}
 
-  async FindAll(): Promise<Produto[]> {
+  async findAll(): Promise<Produto[]> {
     return await this.produtoRepository.find({
       relations: {
         usuario: true,

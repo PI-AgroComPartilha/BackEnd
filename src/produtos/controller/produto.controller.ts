@@ -30,21 +30,33 @@ export class ProdutoController {
   })
   @Get()
   async findAll(): Promise<Produto[]> {
-    return this.produtoService.FindAll();
+    return this.produtoService.findAll();
   }
 
+  @ApiResponse({
+    type: Produto,
+    description: "Retorna um produto pelo ID",
+  })
   @Get("/:id")
   @HttpCode(HttpStatus.OK)
   findById(@Param("id", ParseIntPipe) id: number): Promise<Produto> {
     return this.produtoService.findById(id);
   }
 
+  @ApiResponse({
+    type: [Produto],
+    description: "Retorna produtos pelo nome",
+  })
   @Get("/nome/:nome")
   @HttpCode(HttpStatus.OK)
   findByNome(@Param("nome") nome: string): Promise<Produto[]> {
     return this.produtoService.findByNome(nome);
   }
 
+  @ApiResponse({
+    type: [Produto],
+    description: "Retorna pela descrição",
+  })
   @Get("descricao/:descricao")
   @HttpCode(HttpStatus.OK)
   async findByDescricao(
@@ -53,10 +65,10 @@ export class ProdutoController {
     return this.produtoService.findByDescricao(descricao);
   }
 
-  /*  @ApiResponse({
-    type: ,
+  @ApiResponse({
+    type: Produto,
     description: "Criar novo Produto",
-  }) */
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Post()

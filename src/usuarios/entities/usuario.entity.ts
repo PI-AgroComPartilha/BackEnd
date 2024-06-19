@@ -16,32 +16,24 @@ export class Usuario {
   @ApiProperty()
   id: number;
 
-  @Column({ nullable: false, length: 255 })
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsNotEmpty()
-  @ApiProperty()
+  @Column({ nullable: false, length: 255, unique: true })
   nome: string;
 
-  @Column({ nullable: false, length: 255, unique: true })
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsEmail()
-  @ApiProperty({ example: "email@email.com.br" })
-  usuario: string;
-
-  @Column({ nullable: false, length: 255 })
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsNotEmpty()
   @ApiProperty()
+  @Column({ nullable: false, length: 255, unique: true })
+  email: string;
+
+  @ApiProperty()
+  @Column({ nullable: false, length: 255 })
   senha: string;
 
   @Column({ nullable: false, length: 128 })
-  @IsNotEmpty()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsIn(["vendedor", "cliente", "admin"])
-  @ApiProperty({ examples: ["cliente", "vendedor", "admin"] })
   tipo: string;
 
-  @Column()
+  @Column({
+    default:
+      "https://conflictresolutionmn.org/wp-content/uploads/2020/01/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg",
+  })
   @ApiProperty()
   foto: string;
 
