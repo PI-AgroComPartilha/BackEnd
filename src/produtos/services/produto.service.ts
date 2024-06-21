@@ -7,6 +7,19 @@ import { ProdutoCreateDTO } from "../dto/produto.create.dto";
 import { CategoriaService } from "../../categorias/services/categoria.service";
 import ProdutoUpdateDTO from "../dto/produto.update.dto";
 
+const relations = {
+  relations: { usuario: true, categoria: true },
+  select: {
+    usuario: {
+      id: true,
+      nome: true,
+      email: true,
+      tipo: true,
+      foto: true,
+    },
+  },
+};
+
 @Injectable()
 export class ProdutoService {
   constructor(
@@ -17,12 +30,7 @@ export class ProdutoService {
   ) {}
 
   async findAll(): Promise<Produto[]> {
-    return await this.produtoRepository.find({
-      relations: {
-        usuario: true,
-        categoria: true,
-      },
-    });
+    return await this.produtoRepository.find(relations);
   }
 
   async findById(id: number): Promise<Produto> {
@@ -30,7 +38,7 @@ export class ProdutoService {
       where: {
         id,
       },
-      relations: { usuario: true, categoria: true },
+      ...relations,
     });
 
     if (!produto)
@@ -44,7 +52,7 @@ export class ProdutoService {
       where: {
         nome: ILike(`%${nome}%`),
       },
-      relations: { usuario: true, categoria: true },
+      ...relations,
     });
   }
 
@@ -53,6 +61,7 @@ export class ProdutoService {
       where: {
         descricao: ILike(`%${descricao}%`),
       },
+      ...relations,
     });
   }
 
@@ -64,12 +73,22 @@ export class ProdutoService {
     return await this.produtoRepository.save(produto);
   }
 
-  async update(id: number, produto: ProdutoUpdateDTO): Promise<Produto> {
+  async update(
+    id: number,
+    produto: ProdutoUpdateDTO,
+    userId: number
+  ): Promise<Produto> {
     const buscaProduto: Produto = await this.findById(id);
     if (!buscaProduto || !id)
       throw new HttpException(
         "O Produto não foi encontrado!",
         HttpStatus.NOT_FOUND
+      );
+
+    if (buscaProduto.usuario.id !== userId)
+      throw new HttpException(
+        "O Usuário não tem permissão para editar o Produto!",
+        HttpStatus.UNAUTHORIZED
       );
 
     if (produto.categoria && buscaProduto.categoria.id !== produto.categoria.id)
@@ -81,9 +100,9 @@ export class ProdutoService {
     return await this.produtoRepository.save({ ...buscaProduto, ...produto });
   }
 
-  /* TODO: It's a good ideia check if the user is the same of the product, to not other user deleter product from other */
-  async Delete(id: number): Promise<DeleteResult> {
-    const buscaProduto: Produto = await this.findById(id);
+  /* TODO: It's a good ideia check if the user is the same of the product, to not other user delete product from other */
+  async Delete(produtoId: number, userId: number): Promise<DeleteResult> {
+    const buscaProduto: Produto = await this.findById(produtoId);
 
     if (!buscaProduto)
       throw new HttpException(
@@ -91,6 +110,12 @@ export class ProdutoService {
         HttpStatus.NOT_FOUND
       );
 
-    return await this.produtoRepository.delete(id);
+    if (buscaProduto.usuario.id !== userId)
+      throw new HttpException(
+        "O Usuário não tem permissão para deletar o Produto!",
+        HttpStatus.UNAUTHORIZED
+      );
+
+    return await this.produtoRepository.delete(produtoId);
   }
 }

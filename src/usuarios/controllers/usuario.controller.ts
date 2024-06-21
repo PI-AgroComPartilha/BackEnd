@@ -73,7 +73,6 @@ export class UsuarioController {
     @Param("id", ParseIntPipe) id: number,
     @Body() usuario: UsuarioUpdateDTO
   ): Promise<Usuario> {
-    console.log("passssssssshre");
     return this.usuarioService.update(id, usuario);
   }
 

@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 @Injectable()
 export class Bcrypt {
   async criptografarSenha(senha: string): Promise<string> {
-    const saltos = 12;
+    const saltos = 10;
     return await bcrypt.hash(senha, saltos);
   }
 

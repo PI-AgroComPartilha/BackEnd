@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Request,
   UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
@@ -83,7 +84,8 @@ export class ProdutoController {
   @HttpCode(HttpStatus.OK)
   update(
     @Param("id", ParseIntPipe) id: number,
-    @Body() produto: ProdutoUpdateDTO
+    @Body() produto: ProdutoUpdateDTO,
+    @Request() req
   ): Promise<Produto> {
     return this.produtoService.update(id, produto);
   }
@@ -92,7 +94,10 @@ export class ProdutoController {
   @ApiBearerAuth()
   @Delete("/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param("id", ParseIntPipe) id: number): Promise<DeleteResult> {
-    return this.produtoService.Delete(id);
+  delete(
+    @Param("id", ParseIntPipe) produtoId: number,
+    @Request() req
+  ): Promise<DeleteResult> {
+    return this.produtoService.Delete(produtoId, req.user.userId);
   }
 }

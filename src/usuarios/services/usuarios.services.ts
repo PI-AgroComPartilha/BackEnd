@@ -84,7 +84,6 @@ export class UsuarioService {
   async update(id: number, usuario: UsuarioUpdateDTO): Promise<Usuario> {
     /* I don't now if will check by id or by email */
     const userDB = await this.findById(id);
-    console.log("passssssssshre");
     if (usuario.email) await this.checkExistEmail(usuario.email, id);
     if (usuario.nome) await this.checkExistName(usuario.nome, id);
     if (usuario.senha)
