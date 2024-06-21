@@ -16,7 +16,7 @@ export class Usuario {
   @ApiProperty()
   id: number;
 
-  @Column({ nullable: false, length: 255, unique: true })
+  @Column({ nullable: false, length: 255 })
   nome: string;
 
   @ApiProperty()
@@ -27,7 +27,12 @@ export class Usuario {
   @Column({ nullable: false, length: 255 })
   senha: string;
 
-  @Column({ nullable: false, length: 128 })
+  @Column({
+    nullable: false,
+    length: 128,
+    default: "consumidor",
+    enum: ["admin", "consumidor", "produtor"],
+  })
   tipo: string;
 
   @Column({

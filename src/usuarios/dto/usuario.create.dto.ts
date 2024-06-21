@@ -26,17 +26,20 @@ export class UsuarioCreateDTO {
   @Length(8, 16)
   senha: string;
 
-  @ApiProperty({ examples: ["cliente", "vendedor", "admin"], default: "admin" })
+  @ApiProperty({
+    examples: ["consumidor", "produtor", "admin"],
+    default: "admin",
+  })
   @IsNotEmpty()
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @IsIn(["vendedor", "cliente", "admin"])
+  @IsIn(["consumidor", "produtor", "admin"])
   tipo: string;
 
   @ApiProperty({
     example:
       "https://conflictresolutionmn.org/wp-content/uploads/2020/01/flat-business-man-user-profile-avatar-icon-vector-4333097.jpg",
   })
-  @IsUrl()
   @IsOptional()
+  @IsUrl()
   foto: string;
 }

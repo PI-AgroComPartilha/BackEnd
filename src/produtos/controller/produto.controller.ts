@@ -74,8 +74,11 @@ export class ProdutoController {
   @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.OK)
-  create(@Body() Produto: ProdutoCreateDTO): Promise<Produto> {
-    return this.produtoService.create(Produto);
+  create(@Body() produto: ProdutoCreateDTO, @Request() req): Promise<Produto> {
+    return this.produtoService.create({
+      ...produto,
+      usuario: { id: req.user.userId },
+    });
   }
 
   @UseGuards(JwtAuthGuard)
