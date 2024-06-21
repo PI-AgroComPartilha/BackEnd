@@ -24,7 +24,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
 
-  /* Restore this later */
-  await app.listen(process.env.PORT || 4002);
+  await app.listen(process.env.PORT || 4000);
 }
 bootstrap();
