@@ -87,7 +87,7 @@ export class ProdutoController {
     @Body() produto: ProdutoUpdateDTO,
     @Request() req
   ): Promise<Produto> {
-    return this.produtoService.update(id, produto);
+    return this.produtoService.update(id, produto, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
